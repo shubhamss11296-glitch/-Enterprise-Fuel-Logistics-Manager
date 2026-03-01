@@ -1,0 +1,5 @@
+{
+  "name": "Remix: Enterprise Fuel Logistics Manager",
+  "description": "A production-grade fuel management and reconciliation system for large-scale auto-logistics operations, featuring automated trip matching, fuel balancing, and comprehensive reporting.",
+  "requestFramePermissions": []
+}
