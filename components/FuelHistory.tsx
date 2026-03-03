@@ -31,7 +31,9 @@ const FuelHistory: React.FC<FuelHistoryProps> = ({ preFilter }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [deleteContext, setDeleteContext] = useState<DeleteState | null>(null);
 
-  const isAdmin = user?.role === UserRole.ADMIN;
+  const canDelete =
+  user?.role === UserRole.ADMIN ||
+  user?.role === UserRole.SUPER_ADMIN;
 
   const loadTxns = async () => {
     try {
