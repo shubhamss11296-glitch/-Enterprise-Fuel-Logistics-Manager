@@ -89,37 +89,50 @@ const FuelHistory: React.FC<FuelHistoryProps> = ({ preFilter }) => {
   };
 
   const initiateDelete = async (txn: FuelTransaction) => {
-    if (!isAdmin) return alert("Restricted: Admin access required to delete ledger records.");
-    
-    const allocs = await db.getByIndex<FuelAllocation>('fuel_allocations', 'txnId', txn.txnId);
-    
-    const enrichedAllocs = await Promise.all(allocs.map(async (a) => {
+  if (!canDelete) return alert("Access Restricted");
+
+  const allocs = await db.getByIndex<FuelAllocation>(
+    'fuel_allocations',
+    'txnId',
+    txn.txnId
+  );
+
+  const enrichedAllocs = await Promise.all(
+    allocs.map(async (a) => {
       const trip = await db.getById<Trip>('trips', a.tripId);
       return { ...a, tripDetails: trip };
-    }));
+    })
+  );
 
-    setDeleteContext({
-      txn,
-      allocations: enrichedAllocs
-    });
-  };
+  setDeleteContext({
+    txn,
+    allocations: enrichedAllocs
+  });
+};
 
-  const confirmDelete = async () => {
-    if (!deleteContext || !isAdmin) return;
-    
-    try {
-      if (deleteContext.allocations.length === 0) {
-        await FuelService.deleteTransaction(deleteContext.txn.txnId, user?.username || 'Admin');
-      } else {
-        await FuelService.deleteTransactionWithAllocations(deleteContext.txn.txnId, user?.username || 'Admin');
-      }
-      setDeleteContext(null);
-      await loadTxns();
-    } catch (e: any) {
-      alert(e.message);
+const confirmDelete = async () => {
+  if (!deleteContext || !canDelete) return;
+
+  try {
+    if (deleteContext.allocations.length === 0) {
+      await FuelService.deleteTransaction(
+        deleteContext.txn.txnId,
+        user?.username || 'Admin'
+      );
+    } else {
+      await FuelService.deleteTransactionWithAllocations(
+        deleteContext.txn.txnId,
+        user?.username || 'Admin'
+      );
     }
-  };
 
+    setDeleteContext(null);
+    await loadTxns();
+
+  } catch (e: any) {
+    alert(e.message);
+  }
+};
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-slate-400">
