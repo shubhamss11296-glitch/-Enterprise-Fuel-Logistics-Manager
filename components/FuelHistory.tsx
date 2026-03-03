@@ -137,7 +137,7 @@ const FuelHistory: React.FC<FuelHistoryProps> = ({ preFilter }) => {
           <p className="text-slate-400 text-sm font-medium">CCMS / Fuel Statement reconciliation with trip manifests</p>
         </div>
         <div className="flex flex-wrap gap-3">
-          {isAdmin && (
+          {canDelete && (
             <button 
               onClick={handleSeedData}
               disabled={isSeeding}
@@ -269,7 +269,7 @@ const FuelHistory: React.FC<FuelHistoryProps> = ({ preFilter }) => {
                       )}
                     </td>
                     <td className="px-4 py-4 text-right">
-                      {isAdmin && (
+                      {canDelete && (
                         <button 
                           onClick={() => initiateDelete(txn)}
                           className="p-1.5 rounded-lg transition-all text-slate-300 hover:text-red-500 hover:bg-red-50"
